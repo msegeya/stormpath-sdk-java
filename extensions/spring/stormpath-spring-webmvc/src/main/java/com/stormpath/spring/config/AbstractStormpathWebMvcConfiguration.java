@@ -40,76 +40,21 @@ import com.stormpath.sdk.servlet.event.RequestEventListenerAdapter;
 import com.stormpath.sdk.servlet.event.TokenRevocationRequestEventListener;
 import com.stormpath.sdk.servlet.event.impl.Publisher;
 import com.stormpath.sdk.servlet.event.impl.RequestEventPublisher;
-import com.stormpath.sdk.servlet.filter.ControllerConfigResolver;
-import com.stormpath.sdk.servlet.filter.DefaultServerUriResolver;
-import com.stormpath.sdk.servlet.filter.DefaultUsernamePasswordRequestFactory;
-import com.stormpath.sdk.servlet.filter.DefaultWrappedServletRequestFactory;
-import com.stormpath.sdk.servlet.filter.FilterChainResolver;
-import com.stormpath.sdk.servlet.filter.ProxiedFilterChain;
-import com.stormpath.sdk.servlet.filter.ServerUriResolver;
-import com.stormpath.sdk.servlet.filter.StormpathFilter;
-import com.stormpath.sdk.servlet.filter.UsernamePasswordRequestFactory;
-import com.stormpath.sdk.servlet.filter.WrappedServletRequestFactory;
-import com.stormpath.sdk.servlet.filter.account.AccountResolverFilter;
-import com.stormpath.sdk.servlet.filter.account.AuthenticationResultSaver;
-import com.stormpath.sdk.servlet.filter.account.AuthorizationHeaderAccountResolver;
-import com.stormpath.sdk.servlet.filter.account.CookieAccountResolver;
-import com.stormpath.sdk.servlet.filter.account.CookieAuthenticationResultSaver;
-import com.stormpath.sdk.servlet.filter.account.DefaultJwtAccountResolver;
-import com.stormpath.sdk.servlet.filter.account.JwtAccountResolver;
-import com.stormpath.sdk.servlet.filter.account.JwtSigningKeyResolver;
-import com.stormpath.sdk.servlet.filter.account.SessionAccountResolver;
-import com.stormpath.sdk.servlet.filter.account.SessionAuthenticationResultSaver;
-import com.stormpath.sdk.servlet.filter.oauth.AccessTokenAuthenticationRequestFactory;
-import com.stormpath.sdk.servlet.filter.oauth.AccessTokenResultFactory;
-import com.stormpath.sdk.servlet.filter.oauth.DefaultAccessTokenAuthenticationRequestFactory;
-import com.stormpath.sdk.servlet.filter.oauth.DefaultAccessTokenRequestAuthorizer;
-import com.stormpath.sdk.servlet.filter.oauth.DefaultAccessTokenResultFactory;
-import com.stormpath.sdk.servlet.filter.oauth.DefaultRefreshTokenAuthenticationRequestFactory;
-import com.stormpath.sdk.servlet.filter.oauth.DefaultRefreshTokenResultFactory;
-import com.stormpath.sdk.servlet.filter.oauth.OriginAccessTokenRequestAuthorizer;
-import com.stormpath.sdk.servlet.filter.oauth.RefreshTokenAuthenticationRequestFactory;
-import com.stormpath.sdk.servlet.filter.oauth.RefreshTokenResultFactory;
+import com.stormpath.sdk.servlet.filter.*;
+import com.stormpath.sdk.servlet.filter.account.*;
+import com.stormpath.sdk.servlet.filter.oauth.*;
 import com.stormpath.sdk.servlet.form.DefaultField;
 import com.stormpath.sdk.servlet.form.Field;
 import com.stormpath.sdk.servlet.http.InvalidMediaTypeException;
 import com.stormpath.sdk.servlet.http.MediaType;
 import com.stormpath.sdk.servlet.http.Resolver;
 import com.stormpath.sdk.servlet.http.Saver;
-import com.stormpath.sdk.servlet.http.authc.AccountStoreResolver;
-import com.stormpath.sdk.servlet.http.authc.AuthorizationHeaderAuthenticator;
-import com.stormpath.sdk.servlet.http.authc.BasicAuthenticationScheme;
-import com.stormpath.sdk.servlet.http.authc.BearerAuthenticationScheme;
-import com.stormpath.sdk.servlet.http.authc.DisabledAccountStoreResolver;
-import com.stormpath.sdk.servlet.http.authc.HeaderAuthenticator;
-import com.stormpath.sdk.servlet.http.authc.HttpAuthenticationScheme;
+import com.stormpath.sdk.servlet.http.authc.*;
 import com.stormpath.sdk.servlet.i18n.MessageTag;
 import com.stormpath.sdk.servlet.idsite.DefaultIdSiteOrganizationResolver;
 import com.stormpath.sdk.servlet.idsite.IdSiteOrganizationContext;
-import com.stormpath.sdk.servlet.mvc.AccessTokenController;
-import com.stormpath.sdk.servlet.mvc.ChangePasswordController;
-import com.stormpath.sdk.servlet.mvc.ErrorModelFactory;
-import com.stormpath.sdk.servlet.mvc.ForgotPasswordController;
-import com.stormpath.sdk.servlet.mvc.IdSiteController;
-import com.stormpath.sdk.servlet.mvc.IdSiteLogoutController;
-import com.stormpath.sdk.servlet.mvc.IdSiteResultController;
-import com.stormpath.sdk.servlet.mvc.LoginController;
-import com.stormpath.sdk.servlet.mvc.LoginErrorModelFactory;
-import com.stormpath.sdk.servlet.mvc.LogoutController;
-import com.stormpath.sdk.servlet.mvc.MeController;
-import com.stormpath.sdk.servlet.mvc.RegisterController;
-import com.stormpath.sdk.servlet.mvc.SamlController;
-import com.stormpath.sdk.servlet.mvc.SamlLogoutController;
-import com.stormpath.sdk.servlet.mvc.SamlResultController;
-import com.stormpath.sdk.servlet.mvc.SendVerificationEmailController;
-import com.stormpath.sdk.servlet.mvc.VerifyController;
-import com.stormpath.sdk.servlet.mvc.WebHandler;
-import com.stormpath.sdk.servlet.mvc.provider.AccountStoreModelFactory;
-import com.stormpath.sdk.servlet.mvc.provider.DefaultAccountStoreModelFactory;
-import com.stormpath.sdk.servlet.mvc.provider.FacebookCallbackController;
-import com.stormpath.sdk.servlet.mvc.provider.GithubCallbackController;
-import com.stormpath.sdk.servlet.mvc.provider.GoogleCallbackController;
-import com.stormpath.sdk.servlet.mvc.provider.LinkedinCallbackController;
+import com.stormpath.sdk.servlet.mvc.*;
+import com.stormpath.sdk.servlet.mvc.provider.*;
 import com.stormpath.sdk.servlet.oauth.AccessTokenValidationStrategy;
 import com.stormpath.sdk.servlet.oauth.impl.JwtTokenSigningKeyResolver;
 import com.stormpath.sdk.servlet.organization.DefaultOrganizationNameKeyResolver;
@@ -120,16 +65,7 @@ import com.stormpath.sdk.servlet.util.RemoteAddrResolver;
 import com.stormpath.sdk.servlet.util.SecureRequiredExceptForLocalhostResolver;
 import com.stormpath.sdk.servlet.util.SubdomainResolver;
 import com.stormpath.spring.context.CompositeMessageSource;
-import com.stormpath.spring.mvc.ChangePasswordControllerConfigResolver;
-import com.stormpath.spring.mvc.ForgotPasswordControllerConfigResolver;
-import com.stormpath.spring.mvc.LoginControllerConfigResolver;
-import com.stormpath.spring.mvc.LogoutControllerConfigResolver;
-import com.stormpath.spring.mvc.RegisterControllerConfigResolver;
-import com.stormpath.spring.mvc.SendVerificationEmailControllerConfigResolver;
-import com.stormpath.spring.mvc.SpringController;
-import com.stormpath.spring.mvc.SpringSpaController;
-import com.stormpath.spring.mvc.TemplateLayoutInterceptor;
-import com.stormpath.spring.mvc.VerifyControllerConfigResolver;
+import com.stormpath.spring.mvc.*;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,16 +77,10 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.CompositePropertySource;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.EnumerablePropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.*;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.*;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
@@ -165,17 +95,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -496,7 +416,8 @@ public abstract class AbstractStormpathWebMvcConfiguration {
     public Controller stormpathGoogleCallbackController() {
         GoogleCallbackController googleCallbackController = new GoogleCallbackController(
                 stormpathLoginControllerConfigResolver().getNextUri(),
-                stormpathAuthenticationResultSaver()
+                stormpathAuthenticationResultSaver(),
+                stormpathRequestEventPublisher()
         );
 
         return createSpringController(googleCallbackController);
@@ -505,7 +426,8 @@ public abstract class AbstractStormpathWebMvcConfiguration {
     public Controller stormpathGithubCallbackController() {
         GithubCallbackController githubCallbackController = new GithubCallbackController(
                 stormpathLoginControllerConfigResolver().getNextUri(),
-                stormpathAuthenticationResultSaver()
+                stormpathAuthenticationResultSaver(),
+                stormpathRequestEventPublisher()
         );
 
         return createSpringController(githubCallbackController);
@@ -514,7 +436,8 @@ public abstract class AbstractStormpathWebMvcConfiguration {
     public Controller stormpathFacebookCallbackController() {
         FacebookCallbackController facebookCallbackController = new FacebookCallbackController(
                 stormpathLoginControllerConfigResolver().getNextUri(),
-                stormpathAuthenticationResultSaver()
+                stormpathAuthenticationResultSaver(),
+                stormpathRequestEventPublisher()
         );
 
         return createSpringController(facebookCallbackController);
@@ -523,7 +446,8 @@ public abstract class AbstractStormpathWebMvcConfiguration {
     public Controller stormpathLinkedinCallbackController() {
         LinkedinCallbackController linkedinCallbackController = new LinkedinCallbackController(
                 stormpathLoginControllerConfigResolver().getNextUri(),
-                stormpathAuthenticationResultSaver()
+                stormpathAuthenticationResultSaver(),
+                stormpathRequestEventPublisher()
         );
 
         return createSpringController(linkedinCallbackController);
@@ -1342,6 +1266,11 @@ public abstract class AbstractStormpathWebMvcConfiguration {
             @Override
             public Saver<AuthenticationResult> getAuthenticationResultSaver() {
                 return stormpathAuthenticationResultSaver();
+            }
+
+            @Override
+            public Publisher<RequestEvent> getRequestEventPublisher() {
+                return stormpathRequestEventPublisher();
             }
 
             @Override
